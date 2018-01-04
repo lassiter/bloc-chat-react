@@ -2,6 +2,18 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import logo from './logo.svg';
 import './App.css';
+import RoomList from './components/RoomList';
+
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyDUiwp0RB-bKv2LtW9dcQyuhVXK6INhYs0",
+  authDomain: "react-bloc-chat-745e8.firebaseapp.com",
+  databaseURL: "https://react-bloc-chat-745e8.firebaseio.com",
+  projectId: "react-bloc-chat-745e8",
+  storageBucket: "react-bloc-chat-745e8.appspot.com",
+  messagingSenderId: "772547305927"
+};
+firebase.initializeApp(config);
 
 class App extends Component {
   render() {
@@ -11,9 +23,8 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <p>RoomList:</p>
+        <RoomList firebase={firebase} />
       </div>
     );
   }
