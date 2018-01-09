@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class RoomList extends Component {
   constructor(props) {
     super(props);
-      this.state = { rooms:[], newRoomName:'' };
+      this.state = { rooms:[], newRoomName:''};
       this.roomsRef = this.props.firebase.database().ref('rooms');
       this.handleChange = this.handleChange.bind(this);
       this.createRoom = this.createRoom.bind(this);
@@ -27,10 +27,13 @@ class RoomList extends Component {
     this.setState({ rooms: this.state.rooms.concat(room), newRoomName: "" });
   }
 
+  selectRoom(room){
+    this.props.onChangeActiveRoomName(room.name);
+  }
 
   render() {
   const roomList = this.state.rooms.map((room,i) =>
-      <li key={i}>{room.name}</li>
+      <li key={i} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li>
     )
     console.log(this.state.rooms)
     const roomForm =(
