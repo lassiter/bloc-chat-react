@@ -9,18 +9,18 @@ class RoomList extends Component {
       this.createRoom = this.createRoom.bind(this);
   }
   componentDidMount() {
-    this.roomsRef.on('child_added', snapshot => {
-      const room = snapshot.val();
-      room.key = snapshot.key;
-      this.setState({ rooms: this.state.rooms.concat( room ) })
-      console.log(this.state.rooms)
-    });
+    // this.roomsRef.on('child_added', snapshot => {
+    //   const room = snapshot.val();
+    //   room.key = snapshot.key;
+    //   this.setState({ rooms: this.state.rooms.concat( room ) })
+    //   console.log(this.state.rooms)
+    // });
   }
 
   handleChange(e) {
     this.setState({ newRoomName: e.target.value })
   }
-
+// to-do push up to app
   createRoom() {
     const room = { name: this.state.newRoomName };
     this.roomsRef.push(room);
@@ -28,14 +28,13 @@ class RoomList extends Component {
   }
 
   selectRoom(room){
-    this.props.onChangeActiveRoomName(room.name);
+    this.props.onChangeActiveRoom(room);
   }
 
   render() {
-  const roomList = this.state.rooms.map((room,i) =>
+  const roomList = this.props.roomList.map((room,i) =>
       <li key={i} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li>
     )
-    console.log(this.state.rooms)
     const roomForm =(
       <form onSubmit={
         (e) =>{

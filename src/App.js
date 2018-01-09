@@ -18,32 +18,55 @@ firebase.initializeApp(config);
 class App extends Component {
   constructor(props) {
     super(props);
-      this.state = { activeRoomName: "", messages: [], rooms: [] };
+      this.state = { activeRoom: [], rooms:[],  messages: [], activeRoomMessages: [] };
       this.messageRef = firebase.database().ref('messages');
-      this.roomRef = firebase.database().ref('rooms');
-      this.setActiveRoomName = this.setActiveRoomName.bind(this);
+      this.roomsRef = firebase.database().ref('rooms');
+      this.setActiveRoom = this.setActiveRoom.bind(this);
+      this.compileActiveRoomMessages = this.compileActiveRoomMessages.bind(this);
   }
   componentDidMount() {
+    this.roomsRef.on('child_added', snapshot => {
+      const room = snapshot.val();
+      room.key = snapshot.key;
+      this.setState({ rooms: this.state.rooms.concat( room ) })
+    });
     this.messageRef.on('child_added', snapshot => {
       const message = snapshot.val();
       message.key = snapshot.key;
       this.setState({ messages: this.state.messages.concat( message )})
-      console.log(this.state)
     });
   }
 
-  setActiveRoomName(activeRoomName){
-    this.setState({ activeRoomName })
+// compileActiveRoomMessages takes activeRoomName and does several things:
+//// 1. Find the key for activeRoomName, then locates all messages with that same roomID.
+//// 2. Returns the content, sentAt, and username, and key for each individual msg that matches "1.".
+
+  compileActiveRoomMessages() {
+    const activeRoomKey = this.state.activeRoom.key;
+    firebase.database().ref('messages').orderByChild("roomID").equalTo(activeRoomKey).on("child_added", snapshot => {
+      const message = snapshot.val();
+      console.log(message);
+      // console.log(this.state.activeRoomMessages.concat(message));
+      this.setState({activeRoomMessages : this.state.activeRoomMessages.concat( message )});
+    });
+  }
+
+  setActiveRoom(activeRoom){
+    this.setState({ activeRoom }, () => {
+      this.compileActiveRoomMessages();
+    });
   }
 
 
+
   render() {
+    console.log(this.state.activeRoomMessages);
     return (
       <div className="App">
-        <h1>{this.state.activeRoomName || "Select A Room"}</h1>
+        <h1>{this.state.activeRoom.name || "Select A Room"}</h1>
         <p>RoomList:</p>
-        <RoomList firebase={firebase} onChangeActiveRoomName={this.setActiveRoomName}/>
-        <MessageList firebase={firebase} />
+        <RoomList firebase={firebase} roomList={this.state.rooms} onChangeActiveRoom={this.setActiveRoom}/>
+        <MessageList firebase={firebase} activeRoomMessages={this.state.activeRoomMessages} />
       </div>
     );
   }
