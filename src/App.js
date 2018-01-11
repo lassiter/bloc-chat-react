@@ -43,12 +43,16 @@ class App extends Component {
 
   compileActiveRoomMessages() {
     const activeRoomKey = this.state.activeRoom.key;
+    let message = [];
     firebase.database().ref('messages').orderByChild("roomID").equalTo(activeRoomKey).on("child_added", snapshot => {
-      const message = snapshot.val();
+      message = message.concat(snapshot.val());
       console.log(message);
       // console.log(this.state.activeRoomMessages.concat(message));
-      this.setState({activeRoomMessages : this.state.activeRoomMessages.concat( message )});
+      this.setState({
+        activeRoomMessages : this.state.activeRoomMessages.concat(message)
+      });
     });
+
   }
 
   setActiveRoom(activeRoom){
