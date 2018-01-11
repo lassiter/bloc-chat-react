@@ -56,6 +56,7 @@ class App extends Component {
   }
 
   setActiveRoom(activeRoom){
+    this.setState({activeRoomMessages : []});
     this.setState({ activeRoom }, () => {
       this.compileActiveRoomMessages();
     });
