@@ -68,6 +68,7 @@ class App extends Component {
     console.log(this.state.activeRoomMessages);
     return (
       <div className="App">
+        <span>{"Welcome"}</span>
         <h1>{this.state.activeRoom.name || "Select A Room"}</h1>
         <p>RoomList:</p>
         <RoomList firebase={firebase} roomList={this.state.rooms} onChangeActiveRoom={this.setActiveRoom}/>
