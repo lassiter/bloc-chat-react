@@ -3,6 +3,7 @@ import * as firebase from 'firebase';
 import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
+import User from './components/user';
 
 // Initialize Firebase
 var config = {
@@ -18,11 +19,17 @@ firebase.initializeApp(config);
 class App extends Component {
   constructor(props) {
     super(props);
-      this.state = { activeRoom: [], rooms:[],  messages: [], activeRoomMessages: [] };
+      this.state = {
+                      user: null,
+                      activeRoom: [],
+                      rooms:[],
+                      messages: [],
+                      activeRoomMessages: [] };
       this.messageRef = firebase.database().ref('messages');
       this.roomsRef = firebase.database().ref('rooms');
       this.setActiveRoom = this.setActiveRoom.bind(this);
       this.compileActiveRoomMessages = this.compileActiveRoomMessages.bind(this);
+      this.setUser = this.setUser.bind(this);
   }
   componentDidMount() {
     this.roomsRef.on('child_added', snapshot => {
@@ -62,17 +69,21 @@ class App extends Component {
     });
   }
 
-
+  setUser(user){
+    this.setState({user});
+  }
 
   render() {
-    console.log(this.state.activeRoomMessages);
+    const currentUser = this.state.user === null ? "Guest" : this.state.user.displayName;
+    console.log(this.state.user);
     return (
       <div className="App">
         <span>{"Welcome"}</span>
         <h1>{this.state.activeRoom.name || "Select A Room"}</h1>
         <p>RoomList:</p>
         <RoomList firebase={firebase} roomList={this.state.rooms} onChangeActiveRoom={this.setActiveRoom}/>
-        <MessageList firebase={firebase} activeRoomMessages={this.state.activeRoomMessages} />
+        <MessageList firebase={firebase} activeRoomMessages={this.state.activeRoomMessages} user={currentUser}/>
+        <User firebase={firebase} setCurrentUser={this.setUser} user={currentUser} />
       </div>
     );
   }

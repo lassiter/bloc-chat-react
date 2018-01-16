@@ -47,7 +47,6 @@ class RoomList extends Component {
         <button type="submit">Create</button>
       </form>
     );
-//onChange={this.setState({ newRoomName:this.value })}
     return (
       <div className="RoomList">
         <ul>{roomList}</ul>
